@@ -13,12 +13,18 @@ interface ParallaxCardProps {
   foregroundUrl?: string | null;
   backLabel?: string;
   onBack: () => void;
+  onEdit?: () => void;
 }
 
 const DEPTHS_WITH_FG = [0, 1.2, 2.5];
 const DEPTHS_NO_FG = [0, 1.5];
 
-export function ParallaxCard({ movie, logEntry, foregroundUrl, backLabel = 'Back', onBack }: ParallaxCardProps) {
+function formatWatchedDate(dateStr: string): string {
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+export function ParallaxCard({ movie, logEntry, foregroundUrl, backLabel = 'Back', onBack, onEdit }: ParallaxCardProps) {
   const bgUrl = posterUrl(movie.poster_path!, 'w780');
   const year = movie.release_date?.slice(0, 4) || '';
 
@@ -46,13 +52,20 @@ export function ParallaxCard({ movie, logEntry, foregroundUrl, backLabel = 'Back
 
   return (
     <div className={styles.container}>
-      <button className={styles.back} onClick={onBack}>
-        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-          <line x1="14" y1="10" x2="6" y2="10" />
-          <polyline points="10,4 4,10 10,16" />
-        </svg>
-        {backLabel}
-      </button>
+      <div className={styles.topBar}>
+        <button className={styles.back} onClick={onBack}>
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+            <line x1="14" y1="10" x2="6" y2="10" />
+            <polyline points="10,4 4,10 10,16" />
+          </svg>
+          {backLabel}
+        </button>
+        {onEdit && (
+          <button className={styles.editBtn} onClick={onEdit}>
+            Edit
+          </button>
+        )}
+      </div>
 
       <Tilt
         className={styles.tilt}
@@ -99,15 +112,36 @@ export function ParallaxCard({ movie, logEntry, foregroundUrl, backLabel = 'Back
             <div className={styles.meta}>
               {year && <span className={styles.movieYear}>{year}</span>}
               {logEntry ? (
-                <Rating value={logEntry.rating} readOnly size={15} />
+                <Rating
+                  value={logEntry.ratingPartner != null
+                    ? (logEntry.rating + logEntry.ratingPartner) / 2
+                    : logEntry.rating}
+                  readOnly
+                  size={15}
+                  tooltip={logEntry.ratingPartner != null
+                    ? `Him: ${logEntry.rating.toFixed(1)}  ·  Her: ${logEntry.ratingPartner.toFixed(1)}`
+                    : undefined}
+                />
               ) : (
                 <div className={styles.tmdbRating}>
                   <span className={styles.starIcon}>★</span> {movie.vote_average.toFixed(1)}
                 </div>
               )}
             </div>
-            {logEntry?.comment && (
-              <p className={styles.comment}>"{logEntry.comment}"</p>
+            {logEntry?.watchedAt && (
+              <span className={styles.watchedAt}>
+                Watched {formatWatchedDate(logEntry.watchedAt)}
+              </span>
+            )}
+            {(logEntry?.comment || logEntry?.commentPartner) && (
+              <div className={styles.comments}>
+                {logEntry.comment && (
+                  <p className={styles.comment}>&ldquo;{logEntry.comment}&rdquo;</p>
+                )}
+                {logEntry.commentPartner && (
+                  <p className={styles.comment}>&ldquo;{logEntry.commentPartner}&rdquo;</p>
+                )}
+              </div>
             )}
           </div>
         </div>

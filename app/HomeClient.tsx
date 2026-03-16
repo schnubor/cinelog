@@ -7,7 +7,7 @@ import { LogGrid } from '@/components/LogGrid';
 import { SearchBar } from '@/components/SearchBar';
 import { MovieGrid } from '@/components/MovieGrid';
 import { AddMovieModal } from '@/components/AddMovieModal';
-import { ParallaxCard } from '@/components/ParallaxCard';
+import type { MovieFormData } from '@/components/AddMovieModal';
 import { useDebounce } from '@/hooks/useDebounce';
 import type { Movie, LogEntry, TMDBSearchResponse } from '@/types';
 import styles from './page.module.css';
@@ -18,7 +18,7 @@ interface HomeClientProps {
   userId?: string;
 }
 
-type View = 'log' | 'add' | 'detail';
+type View = 'log' | 'add';
 
 export function HomeClient({ initialEntries, isOwner, userId }: HomeClientProps) {
   const router = useRouter();
@@ -28,7 +28,6 @@ export function HomeClient({ initialEntries, isOwner, userId }: HomeClientProps)
   const [results, setResults] = useState<Movie[]>([]);
   const [searching, setSearching] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
-  const [selectedEntry, setSelectedEntry] = useState<LogEntry | null>(null);
 
   const debouncedQuery = useDebounce(query, 350);
 
@@ -65,37 +64,46 @@ export function HomeClient({ initialEntries, isOwner, userId }: HomeClientProps)
   }
 
   const handleAdd = useCallback(
-    async (movie: Movie, rating: number, comment: string) => {
+    async (movie: Movie, data: MovieFormData) => {
       if (!isSupabaseConfigured || !userId) return;
       const supabase = createClient();
-      const { data, error } = await supabase
+      const { data: row, error } = await supabase
         .from('log_entries')
         .insert({
           user_id: userId,
           tmdb_id: movie.id,
           movie_data: movie as unknown as Record<string, unknown>,
-          rating,
-          comment,
+          rating: data.rating,
+          comment: data.comment,
+          rating_partner: data.ratingPartner,
+          comment_partner: data.commentPartner,
+          watched_at: data.watchedAt,
         })
         .select()
         .single();
 
       if (error) throw error;
 
-      const row = data as unknown as {
+      const r = row as unknown as {
         id: string;
         movie_data: Record<string, unknown>;
         rating: number;
         comment: string;
+        rating_partner: number | null;
+        comment_partner: string;
+        watched_at: string | null;
         logged_at: string;
       };
 
       const entry: LogEntry = {
-        id: row.id,
-        movie: row.movie_data as unknown as Movie,
-        rating: row.rating,
-        comment: row.comment,
-        loggedAt: row.logged_at,
+        id: r.id,
+        movie: r.movie_data as unknown as Movie,
+        rating: r.rating,
+        comment: r.comment,
+        ratingPartner: r.rating_partner,
+        commentPartner: r.comment_partner,
+        watchedAt: r.watched_at,
+        loggedAt: r.logged_at,
       };
 
       setEntries((prev) => [entry, ...prev]);
@@ -122,23 +130,6 @@ export function HomeClient({ initialEntries, isOwner, userId }: HomeClientProps)
     router.refresh();
   }, [router]);
 
-  // Detail view
-  if (view === 'detail' && selectedEntry) {
-    return (
-      <div className={styles.app}>
-        <ParallaxCard
-          movie={selectedEntry.movie}
-          logEntry={selectedEntry}
-          backLabel="Back"
-          onBack={() => {
-            setSelectedEntry(null);
-            setView('log');
-          }}
-        />
-      </div>
-    );
-  }
-
   // Add movie view
   if (view === 'add') {
     return (
@@ -147,7 +138,7 @@ export function HomeClient({ initialEntries, isOwner, userId }: HomeClientProps)
           <div className={styles.headerTop}>
             <h1 className={styles.logo}>Cinelog</h1>
           </div>
-          <p className={styles.tagline}>Films watched in 2026</p>
+          <p className={styles.tagline}>Films watched in cinema</p>
         </header>
 
         <main className={styles.main}>
@@ -177,7 +168,7 @@ export function HomeClient({ initialEntries, isOwner, userId }: HomeClientProps)
         {selectedMovie && (
           <AddMovieModal
             movie={selectedMovie}
-            onAdd={handleAdd}
+            onSubmit={handleAdd}
             onCancel={() => setSelectedMovie(null)}
           />
         )}
@@ -204,17 +195,14 @@ export function HomeClient({ initialEntries, isOwner, userId }: HomeClientProps)
             )}
           </div>
         </div>
-        <p className={styles.tagline}>Films watched in 2026</p>
+        <p className={styles.tagline}>Films watched in cinema</p>
       </header>
 
       <main className={styles.main}>
         <LogGrid
           entries={entries}
           isOwner={isOwner}
-          onSelect={(entry) => {
-            setSelectedEntry(entry);
-            setView('detail');
-          }}
+          onSelect={(entry) => router.push(`/movie/${entry.id}`)}
           onRemove={handleRemove}
         />
       </main>

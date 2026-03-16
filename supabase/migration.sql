@@ -8,6 +8,9 @@ create table if not exists public.log_entries (
   movie_data jsonb not null,
   rating numeric(3,1) not null check (rating >= 1.0 and rating <= 10.0),
   comment text default '',
+  rating_partner numeric(3,1) check (rating_partner >= 1.0 and rating_partner <= 10.0),
+  comment_partner text default '',
+  watched_at date,
   logged_at timestamptz default now()
 );
 

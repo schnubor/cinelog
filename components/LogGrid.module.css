@@ -84,6 +84,12 @@
   font-weight: 400;
 }
 
+.ratings {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .empty {
   text-align: center;
   color: var(--text-muted);

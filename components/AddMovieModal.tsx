@@ -3,18 +3,32 @@
 import { useState } from 'react';
 import { Rating } from './RatingStars';
 import { posterUrl } from '@/lib/tmdb-image';
-import type { Movie } from '@/types';
+import type { Movie, LogEntry } from '@/types';
 import styles from './AddMovieModal.module.css';
+
+export interface MovieFormData {
+  rating: number;
+  comment: string;
+  ratingPartner: number | null;
+  commentPartner: string;
+  watchedAt: string | null;
+}
 
 interface AddMovieModalProps {
   movie: Movie;
-  onAdd: (movie: Movie, rating: number, comment: string) => void | Promise<void>;
+  /** Pre-fill for edit mode */
+  existing?: LogEntry;
+  onSubmit: (movie: Movie, data: MovieFormData) => void | Promise<void>;
   onCancel: () => void;
 }
 
-export function AddMovieModal({ movie, onAdd, onCancel }: AddMovieModalProps) {
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState('');
+export function AddMovieModal({ movie, existing, onSubmit, onCancel }: AddMovieModalProps) {
+  const isEdit = !!existing;
+  const [rating, setRating] = useState(existing?.rating ?? 0);
+  const [comment, setComment] = useState(existing?.comment ?? '');
+  const [ratingPartner, setRatingPartner] = useState(existing?.ratingPartner ?? 0);
+  const [commentPartner, setCommentPartner] = useState(existing?.commentPartner ?? '');
+  const [watchedAt, setWatchedAt] = useState(existing?.watchedAt ?? '');
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -22,7 +36,13 @@ export function AddMovieModal({ movie, onAdd, onCancel }: AddMovieModalProps) {
     if (rating === 0) return;
     setSubmitting(true);
     try {
-      await onAdd(movie, rating, comment.trim());
+      await onSubmit(movie, {
+        rating,
+        comment: comment.trim(),
+        ratingPartner: ratingPartner > 0 ? ratingPartner : null,
+        commentPartner: commentPartner.trim(),
+        watchedAt: watchedAt || null,
+      });
     } finally {
       setSubmitting(false);
     }
@@ -47,28 +67,62 @@ export function AddMovieModal({ movie, onAdd, onCancel }: AddMovieModalProps) {
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <label className={styles.label}>
-            Your rating
-            <Rating value={rating} onChange={setRating} />
-            {rating === 0 && <span className={styles.required}>Pick a rating</span>}
-          </label>
-
-          <label className={styles.label}>
-            Comment <span className={styles.optional}>(optional)</span>
-            <textarea
-              className={styles.textarea}
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="What did you think?"
-              rows={3}
+            Watched on <span className={styles.optional}>(optional)</span>
+            <input
+              type="date"
+              className={styles.dateInput}
+              value={watchedAt}
+              onChange={(e) => setWatchedAt(e.target.value)}
             />
           </label>
+
+          <div className={styles.ratingColumns}>
+            <div className={styles.ratingColumn}>
+              <span className={styles.personLabel}>Him</span>
+              <label className={styles.label}>
+                Rating
+                <Rating value={rating} onChange={setRating} />
+                {rating === 0 && <span className={styles.required}>Pick a rating</span>}
+              </label>
+              <label className={styles.label}>
+                Comment <span className={styles.optional}>(optional)</span>
+                <textarea
+                  className={styles.textarea}
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="What did he think?"
+                  rows={2}
+                />
+              </label>
+            </div>
+
+            <div className={styles.divider} />
+
+            <div className={styles.ratingColumn}>
+              <span className={styles.personLabel}>Her</span>
+              <label className={styles.label}>
+                Rating <span className={styles.optional}>(optional)</span>
+                <Rating value={ratingPartner} onChange={setRatingPartner} />
+              </label>
+              <label className={styles.label}>
+                Comment <span className={styles.optional}>(optional)</span>
+                <textarea
+                  className={styles.textarea}
+                  value={commentPartner}
+                  onChange={(e) => setCommentPartner(e.target.value)}
+                  placeholder="What did she think?"
+                  rows={2}
+                />
+              </label>
+            </div>
+          </div>
 
           <div className={styles.actions}>
             <button type="button" className={styles.cancelBtn} onClick={onCancel}>
               Cancel
             </button>
             <button type="submit" className={styles.addBtn} disabled={rating === 0 || submitting}>
-              {submitting ? 'Adding...' : 'Add to Log'}
+              {submitting ? (isEdit ? 'Saving...' : 'Adding...') : (isEdit ? 'Save Changes' : 'Add to Log')}
             </button>
           </div>
         </form>

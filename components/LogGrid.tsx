@@ -12,6 +12,11 @@ interface LogGridProps {
   onRemove: (id: string) => void;
 }
 
+function ratingTooltip(entry: LogEntry): string | undefined {
+  if (entry.ratingPartner == null) return undefined;
+  return `Him: ${entry.rating.toFixed(1)}  ·  Her: ${entry.ratingPartner.toFixed(1)}`;
+}
+
 export function LogGrid({ entries, isOwner, onSelect, onRemove }: LogGridProps) {
   if (entries.length === 0) {
     return (
@@ -52,7 +57,14 @@ export function LogGrid({ entries, isOwner, onSelect, onRemove }: LogGridProps) 
               <span className={styles.year}>
                 {entry.movie.release_date?.slice(0, 4) || '\u2014'}
               </span>
-              <Rating value={entry.rating} readOnly size={13} />
+              <Rating
+                value={entry.ratingPartner != null
+                  ? (entry.rating + entry.ratingPartner) / 2
+                  : entry.rating}
+                readOnly
+                size={13}
+                tooltip={ratingTooltip(entry)}
+              />
             </div>
           </div>
         </div>

@@ -6,6 +6,7 @@ interface RatingDisplayProps {
   value: number;
   readOnly: true;
   size?: number;
+  tooltip?: string;
   onChange?: never;
 }
 
@@ -14,6 +15,7 @@ interface RatingInputProps {
   onChange: (value: number) => void;
   readOnly?: false;
   size?: never;
+  tooltip?: never;
 }
 
 type RatingProps = RatingDisplayProps | RatingInputProps;
@@ -22,8 +24,9 @@ export function Rating(props: RatingProps) {
   if (props.readOnly) {
     return (
       <span
-        className={styles.badge}
+        className={`${styles.badge} ${props.tooltip ? styles.hasTooltip : ''}`}
         style={{ fontSize: props.size ?? 13 }}
+        data-tooltip={props.tooltip}
       >
         {props.value.toFixed(1)}
       </span>
@@ -41,9 +44,9 @@ export function Rating(props: RatingProps) {
         step="0.1"
         value={value || 1}
         onChange={(e) => onChange(parseFloat(e.target.value))}
-        className={styles.slider}
+        className={`${styles.slider} ${value === 0 ? styles.sliderInactive : ''}`}
       />
-      <span className={styles.display}>
+      <span className={`${styles.display} ${value === 0 ? styles.displayInactive : ''}`}>
         {value > 0 ? value.toFixed(1) : '—'}
       </span>
     </div>

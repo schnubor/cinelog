@@ -13,6 +13,35 @@
   font-size: 0.85em;
 }
 
+.hasTooltip {
+  position: relative;
+  cursor: default;
+}
+
+.hasTooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: var(--text, #2c2825);
+  color: var(--bg, #f6f4f0);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  padding: 5px 10px;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 20;
+}
+
+.hasTooltip:hover::after {
+  opacity: 1;
+}
+
 .inputGroup {
   display: flex;
   align-items: center;
@@ -64,4 +93,12 @@
   text-align: right;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
+}
+
+.sliderInactive {
+  opacity: 0.35;
+}
+
+.displayInactive {
+  opacity: 0.35;
 }

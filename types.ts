@@ -26,7 +26,10 @@ export interface PosterLayers {
 export interface LogEntry {
   id: string;
   movie: Movie;
-  rating: number;       // 1.0–10.0
-  comment: string;      // optional, empty string if none
-  loggedAt: string;     // ISO date string
+  rating: number;              // 1.0–10.0
+  comment: string;             // optional, empty string if none
+  ratingPartner: number | null; // 1.0–10.0, null if not rated
+  commentPartner: string;       // optional, empty string if none
+  watchedAt: string | null;    // ISO date string (date only, e.g. "2026-03-15")
+  loggedAt: string;            // ISO date string
 }

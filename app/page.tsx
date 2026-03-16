@@ -8,6 +8,7 @@ async function getLogEntries(): Promise<LogEntry[]> {
     const { data, error } = await supabase
       .from('log_entries')
       .select('*')
+      .order('watched_at', { ascending: false, nullsFirst: false })
       .order('logged_at', { ascending: false });
 
     if (error) throw error;
@@ -17,6 +18,9 @@ async function getLogEntries(): Promise<LogEntry[]> {
       movie_data: Record<string, unknown>;
       rating: number;
       comment: string;
+      rating_partner: number | null;
+      comment_partner: string;
+      watched_at: string | null;
       logged_at: string;
     };
 
@@ -25,6 +29,9 @@ async function getLogEntries(): Promise<LogEntry[]> {
       movie: row.movie_data as unknown as Movie,
       rating: row.rating,
       comment: row.comment,
+      ratingPartner: row.rating_partner,
+      commentPartner: row.comment_partner ?? '',
+      watchedAt: row.watched_at,
       loggedAt: row.logged_at,
     }));
   } catch {
