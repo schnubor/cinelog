@@ -2,56 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
   animation: fadeIn 0.5s ease;
-}
-
-.topBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 340px;
-}
-
-.back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0;
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  font-size: 13px;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  transition: color 0.2s;
-}
-
-.back:hover {
-  color: var(--text);
-}
-
-.back svg {
-  opacity: 0.5;
-}
-
-.editBtn {
-  padding: 6px 16px;
-  background: transparent;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius);
-  color: var(--text-muted);
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  transition: color 0.2s, border-color 0.2s;
-  cursor: pointer;
-}
-
-.editBtn:hover {
-  color: var(--text);
-  border-color: var(--text);
 }
 
 .tilt {
@@ -163,10 +114,6 @@
 
 @media (max-width: 400px) {
   .card {
-    width: 280px;
-  }
-
-  .topBar {
     width: 280px;
   }
 

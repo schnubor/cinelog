@@ -7,13 +7,38 @@ import { Rating } from './RatingStars';
 import type { Movie, LogEntry } from '@/types';
 import styles from './ParallaxCard.module.css';
 
+function useGyroscopePermission() {
+  const [granted, setGranted] = useState(false);
+
+  useEffect(() => {
+    // Non-iOS browsers don't need permission
+    const doe = DeviceOrientationEvent as unknown as { requestPermission?: () => Promise<string> };
+    if (typeof doe.requestPermission !== 'function') {
+      setGranted(true);
+    }
+  }, []);
+
+  const request = useCallback(async () => {
+    const doe = DeviceOrientationEvent as unknown as { requestPermission?: () => Promise<string> };
+    if (typeof doe.requestPermission === 'function') {
+      try {
+        const result = await doe.requestPermission();
+        if (result === 'granted') setGranted(true);
+      } catch {
+        // User denied or error
+      }
+    } else {
+      setGranted(true);
+    }
+  }, []);
+
+  return { granted, request };
+}
+
 interface ParallaxCardProps {
   movie: Movie;
   logEntry?: LogEntry;
   foregroundUrl?: string | null;
-  backLabel?: string;
-  onBack: () => void;
-  onEdit?: () => void;
 }
 
 const DEPTHS_WITH_FG = [0, 1.2, 2.5];
@@ -36,10 +61,11 @@ function useIsMobile(breakpoint = 600) {
   return isMobile;
 }
 
-export function ParallaxCard({ movie, logEntry, foregroundUrl, backLabel = 'Back', onBack, onEdit }: ParallaxCardProps) {
+export function ParallaxCard({ movie, logEntry, foregroundUrl }: ParallaxCardProps) {
   const bgUrl = posterUrl(movie.poster_path!, 'w780');
   const year = movie.release_date?.slice(0, 4) || '';
   const isMobile = useIsMobile();
+  const gyroscope = useGyroscopePermission();
 
   const layerRefs = useRef<(HTMLDivElement | null)[]>([]);
   const depths = foregroundUrl ? DEPTHS_WITH_FG : DEPTHS_NO_FG;
@@ -65,21 +91,6 @@ export function ParallaxCard({ movie, logEntry, foregroundUrl, backLabel = 'Back
 
   return (
     <div className={styles.container}>
-      <div className={styles.topBar}>
-        <button className={styles.back} onClick={onBack}>
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-            <line x1="14" y1="10" x2="6" y2="10" />
-            <polyline points="10,4 4,10 10,16" />
-          </svg>
-          {backLabel}
-        </button>
-        {onEdit && (
-          <button className={styles.editBtn} onClick={onEdit}>
-            Edit
-          </button>
-        )}
-      </div>
-
       <Tilt
         className={styles.tilt}
         tiltMaxAngleX={isMobile ? 0 : 15}
@@ -87,7 +98,7 @@ export function ParallaxCard({ movie, logEntry, foregroundUrl, backLabel = 'Back
         perspective={800}
         scale={1.02}
         transitionSpeed={1200}
-        gyroscope={true}
+        gyroscope={gyroscope.granted}
         glareEnable={true}
         glareMaxOpacity={0.25}
         glareColor="#ffffff"
@@ -96,7 +107,7 @@ export function ParallaxCard({ movie, logEntry, foregroundUrl, backLabel = 'Back
         onMove={handleMove}
         onLeave={handleLeave}
       >
-        <div className={styles.card}>
+        <div className={styles.card} onClick={() => { if (!gyroscope.granted) gyroscope.request(); }}>
           {foregroundUrl ? (
             <>
               <div ref={setLayerRef(0)} className={styles.layer}>

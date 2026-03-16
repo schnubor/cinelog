@@ -3,7 +3,88 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 60px 24px 100px;
+}
+
+/* ── Top bar ── */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 560px;
+  padding: 24px 24px 0;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.back:hover {
+  color: var(--text);
+}
+
+.back svg {
+  opacity: 0.5;
+}
+
+.editBtn {
+  padding: 6px 16px;
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: color 0.2s, border-color 0.2s;
+  cursor: pointer;
+}
+
+.editBtn:hover {
+  color: var(--text);
+  border-color: var(--text);
+}
+
+/* ── Hero: card as the star ── */
+.hero {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px 100px;
+}
+
+.heroContent {
+  animation: heroReveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Content sections ── */
+.content {
+  width: 100%;
+  max-width: 560px;
+  padding: 0 24px 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 0;
+  animation: slideUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .sectionLabel {
@@ -11,41 +92,25 @@
   font-weight: 500;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.description {
-  margin-top: 36px;
-  width: 100%;
-  max-width: 520px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  letter-spacing: 0.1em;
 }
 
 .descriptionText {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text);
-  line-height: 1.65;
+  line-height: 1.7;
   font-weight: 400;
-}
-
-.trailer {
-  margin-top: 36px;
-  width: 100%;
-  max-width: 520px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 .trailerEmbed {
   position: relative;
   width: 100%;
   padding-bottom: 56.25%;
-  border-radius: 6px;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .trailerEmbed iframe {
@@ -56,19 +121,19 @@
   border: none;
 }
 
+/* ── Comments ── */
 .comments {
   display: flex;
   gap: 40px;
-  margin-top: 36px;
-  width: 100%;
-  max-width: 520px;
+  opacity: 0;
+  animation: slideUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .commentBlock {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .commentText {
@@ -76,13 +141,47 @@
   font-size: 15px;
   color: var(--text);
   font-style: italic;
-  line-height: 1.5;
+  line-height: 1.6;
   font-weight: 400;
 }
 
+/* ── Staggered entrance delays ── */
+.animDelay1 { animation-delay: 0.15s; }
+.animDelay2 { animation-delay: 0.28s; }
+.animDelay3 { animation-delay: 0.40s; }
+
+/* ── Animations ── */
+@keyframes heroReveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Mobile ── */
 @media (max-width: 600px) {
-  .page {
-    padding: 32px 16px 80px;
+  .hero {
+    padding: 48px 16px 72px;
+  }
+
+  .content {
+    padding: 0 16px 80px;
+    gap: 36px;
   }
 
   .comments {

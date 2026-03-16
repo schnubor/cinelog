@@ -4,10 +4,13 @@
   background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(6px);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   z-index: 100;
   padding: 20px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   animation: fadeIn 0.15s ease;
 }
 
@@ -18,6 +21,7 @@
   padding: 28px;
   width: 100%;
   max-width: 560px;
+  margin: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
   animation: slideUp 0.2s ease;
 }
@@ -209,6 +213,31 @@
 }
 
 @media (max-width: 500px) {
+  .backdrop {
+    padding: 12px;
+  }
+
+  .modal {
+    padding: 20px;
+    border-radius: 6px;
+  }
+
+  .movieInfo {
+    margin-bottom: 20px;
+  }
+
+  .poster {
+    width: 56px;
+  }
+
+  .title {
+    font-size: 17px;
+  }
+
+  .form {
+    gap: 18px;
+  }
+
   .ratingColumns {
     flex-direction: column;
     gap: 20px;
@@ -227,5 +256,13 @@
   .ratingColumn:last-child {
     padding-left: 0;
     padding-top: 0;
+  }
+
+  .ratingColumn {
+    gap: 12px;
+  }
+
+  .textarea {
+    min-height: 44px;
   }
 }

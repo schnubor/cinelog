@@ -67,51 +67,70 @@ export function MovieDetail({ entry: initialEntry, isOwner, trailerKey }: MovieD
 
   return (
     <div className={styles.page}>
-      <ParallaxCard
-        movie={entry.movie}
-        logEntry={entry}
-        backLabel="Back"
-        onBack={() => router.back()}
-        onEdit={isOwner ? () => setEditing(true) : undefined}
-      />
+      <div className={styles.topBar}>
+        <button className={styles.back} onClick={() => router.back()}>
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+            <line x1="14" y1="10" x2="6" y2="10" />
+            <polyline points="10,4 4,10 10,16" />
+          </svg>
+          Back
+        </button>
+        {isOwner && (
+          <button className={styles.editBtn} onClick={() => setEditing(true)}>
+            Edit
+          </button>
+        )}
+      </div>
 
-      {entry.movie.overview && (
-        <div className={styles.description}>
-          <span className={styles.sectionLabel}>Synopsis</span>
-          <p className={styles.descriptionText}>{entry.movie.overview}</p>
+      <section className={styles.hero}>
+        <div className={styles.heroContent}>
+          <ParallaxCard
+            movie={entry.movie}
+            logEntry={entry}
+          />
         </div>
-      )}
+      </section>
 
-      {trailerKey && (
-        <div className={styles.trailer}>
-          <span className={styles.sectionLabel}>Trailer</span>
-          <div className={styles.trailerEmbed}>
-            <iframe
-              src={`https://www.youtube.com/embed/${trailerKey}`}
-              title="Trailer"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+      {/* Content sections below the hero */}
+      <div className={styles.content}>
+        {entry.movie.overview && (
+          <div className={`${styles.section} ${styles.animDelay1}`}>
+            <span className={styles.sectionLabel}>Synopsis</span>
+            <p className={styles.descriptionText}>{entry.movie.overview}</p>
           </div>
-        </div>
-      )}
+        )}
 
-      {hasComments && (
-        <div className={styles.comments}>
-          {entry.comment && (
-            <div className={styles.commentBlock}>
-              <span className={styles.sectionLabel}>What he said</span>
-              <p className={styles.commentText}>&ldquo;{entry.comment}&rdquo;</p>
+        {trailerKey && (
+          <div className={`${styles.section} ${styles.animDelay2}`}>
+            <span className={styles.sectionLabel}>Trailer</span>
+            <div className={styles.trailerEmbed}>
+              <iframe
+                src={`https://www.youtube.com/embed/${trailerKey}`}
+                title="Trailer"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
             </div>
-          )}
-          {entry.commentPartner && (
-            <div className={styles.commentBlock}>
-              <span className={styles.sectionLabel}>What she said</span>
-              <p className={styles.commentText}>&ldquo;{entry.commentPartner}&rdquo;</p>
-            </div>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+
+        {hasComments && (
+          <div className={`${styles.comments} ${styles.animDelay3}`}>
+            {entry.comment && (
+              <div className={styles.commentBlock}>
+                <span className={styles.sectionLabel}>What he said</span>
+                <p className={styles.commentText}>&ldquo;{entry.comment}&rdquo;</p>
+              </div>
+            )}
+            {entry.commentPartner && (
+              <div className={styles.commentBlock}>
+                <span className={styles.sectionLabel}>What she said</span>
+                <p className={styles.commentText}>&ldquo;{entry.commentPartner}&rdquo;</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       {editing && (
         <AddMovieModal
