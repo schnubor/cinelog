@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { getTrailerKey } from '@/lib/tmdb';
 import type { LogEntry, Movie } from '@/types';
 import { MovieDetail } from './MovieDetail';
 
@@ -21,6 +22,7 @@ export default async function MoviePage({ params }: Props) {
 
   const row = data as unknown as {
     id: string;
+    tmdb_id: number;
     movie_data: Record<string, unknown>;
     rating: number;
     comment: string;
@@ -41,5 +43,7 @@ export default async function MoviePage({ params }: Props) {
     loggedAt: row.logged_at,
   };
 
-  return <MovieDetail entry={entry} isOwner={!!user} />;
+  const trailerKey = await getTrailerKey(row.tmdb_id);
+
+  return <MovieDetail entry={entry} isOwner={!!user} trailerKey={trailerKey} />;
 }

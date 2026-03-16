@@ -12,9 +12,10 @@ import styles from './MovieDetail.module.css';
 interface MovieDetailProps {
   entry: LogEntry;
   isOwner: boolean;
+  trailerKey: string | null;
 }
 
-export function MovieDetail({ entry: initialEntry, isOwner }: MovieDetailProps) {
+export function MovieDetail({ entry: initialEntry, isOwner, trailerKey }: MovieDetailProps) {
   const router = useRouter();
   const [entry, setEntry] = useState(initialEntry);
   const [editing, setEditing] = useState(false);
@@ -62,6 +63,8 @@ export function MovieDetail({ entry: initialEntry, isOwner }: MovieDetailProps) 
     [entry],
   );
 
+  const hasComments = entry.comment || entry.commentPartner;
+
   return (
     <div className={styles.page}>
       <ParallaxCard
@@ -71,6 +74,44 @@ export function MovieDetail({ entry: initialEntry, isOwner }: MovieDetailProps) 
         onBack={() => router.back()}
         onEdit={isOwner ? () => setEditing(true) : undefined}
       />
+
+      {entry.movie.overview && (
+        <div className={styles.description}>
+          <span className={styles.sectionLabel}>Synopsis</span>
+          <p className={styles.descriptionText}>{entry.movie.overview}</p>
+        </div>
+      )}
+
+      {trailerKey && (
+        <div className={styles.trailer}>
+          <span className={styles.sectionLabel}>Trailer</span>
+          <div className={styles.trailerEmbed}>
+            <iframe
+              src={`https://www.youtube.com/embed/${trailerKey}`}
+              title="Trailer"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      )}
+
+      {hasComments && (
+        <div className={styles.comments}>
+          {entry.comment && (
+            <div className={styles.commentBlock}>
+              <span className={styles.sectionLabel}>What he said</span>
+              <p className={styles.commentText}>&ldquo;{entry.comment}&rdquo;</p>
+            </div>
+          )}
+          {entry.commentPartner && (
+            <div className={styles.commentBlock}>
+              <span className={styles.sectionLabel}>What she said</span>
+              <p className={styles.commentText}>&ldquo;{entry.commentPartner}&rdquo;</p>
+            </div>
+          )}
+        </div>
+      )}
 
       {editing && (
         <AddMovieModal

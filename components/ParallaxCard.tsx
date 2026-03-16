@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState, useEffect } from 'react';
 import Tilt from 'react-parallax-tilt';
 import { posterUrl } from '@/lib/tmdb-image';
 import { Rating } from './RatingStars';
@@ -24,9 +24,22 @@ function formatWatchedDate(dateStr: string): string {
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+function useIsMobile(breakpoint = 600) {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${breakpoint}px)`);
+    setIsMobile(mql.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, [breakpoint]);
+  return isMobile;
+}
+
 export function ParallaxCard({ movie, logEntry, foregroundUrl, backLabel = 'Back', onBack, onEdit }: ParallaxCardProps) {
   const bgUrl = posterUrl(movie.poster_path!, 'w780');
   const year = movie.release_date?.slice(0, 4) || '';
+  const isMobile = useIsMobile();
 
   const layerRefs = useRef<(HTMLDivElement | null)[]>([]);
   const depths = foregroundUrl ? DEPTHS_WITH_FG : DEPTHS_NO_FG;
@@ -69,7 +82,7 @@ export function ParallaxCard({ movie, logEntry, foregroundUrl, backLabel = 'Back
 
       <Tilt
         className={styles.tilt}
-        tiltMaxAngleX={15}
+        tiltMaxAngleX={isMobile ? 0 : 15}
         tiltMaxAngleY={15}
         perspective={800}
         scale={1.02}
@@ -133,21 +146,9 @@ export function ParallaxCard({ movie, logEntry, foregroundUrl, backLabel = 'Back
                 Watched {formatWatchedDate(logEntry.watchedAt)}
               </span>
             )}
-            {(logEntry?.comment || logEntry?.commentPartner) && (
-              <div className={styles.comments}>
-                {logEntry.comment && (
-                  <p className={styles.comment}>&ldquo;{logEntry.comment}&rdquo;</p>
-                )}
-                {logEntry.commentPartner && (
-                  <p className={styles.comment}>&ldquo;{logEntry.commentPartner}&rdquo;</p>
-                )}
-              </div>
-            )}
           </div>
         </div>
       </Tilt>
-
-      <p className={styles.hint}>Move your mouse over the card (or tilt your phone)</p>
     </div>
   );
 }
