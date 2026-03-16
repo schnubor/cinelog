@@ -1,5 +1,7 @@
-import type { Movie } from '../types';
-import { posterUrl } from '../api/tmdb';
+'use client';
+
+import type { Movie } from '@/types';
+import { posterUrl } from '@/lib/tmdb-image';
 import styles from './MovieGrid.module.css';
 
 interface MovieGridProps {

@@ -22,3 +22,11 @@ export interface PosterLayers {
   year: string;
   tagline?: string;
 }
+
+export interface LogEntry {
+  id: string;
+  movie: Movie;
+  rating: number;       // 1.0–10.0
+  comment: string;      // optional, empty string if none
+  loggedAt: string;     // ISO date string
+}

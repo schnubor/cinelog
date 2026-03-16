@@ -7,17 +7,17 @@
 }
 
 :root {
-  --bg: #0a0a0f;
-  --bg-surface: #12121a;
-  --bg-card: #1a1a24;
-  --text: #e8e8ed;
-  --text-muted: #8888a0;
-  --accent: #6366f1;
-  --accent-glow: rgba(99, 102, 241, 0.3);
-  --border: rgba(255, 255, 255, 0.06);
-  --radius: 12px;
-
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --bg: #f6f4f0;
+  --bg-surface: #ffffff;
+  --bg-card: #f0ede8;
+  --text: #1a1a1a;
+  --text-muted: #8a8580;
+  --accent: #c45d3e;
+  --accent-glow: rgba(196, 93, 62, 0.12);
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.14);
+  --radius: 4px;
+  font-family: var(--font-body, system-ui, sans-serif);
   color: var(--text);
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
@@ -28,11 +28,6 @@ body {
   min-height: 100dvh;
 }
 
-#root {
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-}
 
 a {
   color: var(--accent);
@@ -45,6 +40,11 @@ button {
   font-family: inherit;
 }
 
-input {
+input, textarea {
   font-family: inherit;
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
 }

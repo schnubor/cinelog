@@ -1,3 +1,5 @@
+'use client';
+
 import { type ChangeEvent } from 'react';
 import styles from './SearchBar.module.css';
 

@@ -1,0 +1,146 @@
+.app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 24px 100px;
+}
+
+.header {
+  margin-bottom: 56px;
+  width: 100%;
+  max-width: 960px;
+}
+
+.headerTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 400;
+  letter-spacing: -0.5px;
+  color: var(--text);
+}
+
+.headerActions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.authBtn {
+  padding: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+  border: none;
+}
+
+.authBtn:hover {
+  color: var(--text);
+}
+
+.addBtn {
+  padding: 8px 20px;
+  background: var(--text);
+  border: none;
+  border-radius: var(--radius);
+  color: var(--bg);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: opacity 0.2s;
+}
+
+.addBtn:hover {
+  opacity: 0.8;
+}
+
+.tagline {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-top: 4px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.main {
+  width: 100%;
+  max-width: 960px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 32px;
+}
+
+.addMoviePanel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+  align-self: flex-start;
+}
+
+.backBtn:hover {
+  color: var(--text);
+}
+
+.backBtn svg {
+  opacity: 0.5;
+}
+
+.empty {
+  color: var(--text-muted);
+  font-size: 14px;
+  text-align: center;
+  margin-top: 48px;
+}
+
+.processing {
+  color: var(--accent);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@media (max-width: 600px) {
+  .app {
+    padding: 32px 16px 80px;
+  }
+
+  .header {
+    margin-bottom: 36px;
+  }
+
+  .logo {
+    font-size: 28px;
+  }
+}

@@ -1,51 +1,52 @@
 .wrapper {
   position: relative;
   width: 100%;
-  max-width: 480px;
+  max-width: 440px;
   margin: 0 auto;
 }
 
 .icon {
   position: absolute;
-  left: 16px;
+  left: 0;
   top: 50%;
   translate: 0 -50%;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   color: var(--text-muted);
   pointer-events: none;
 }
 
 .input {
   width: 100%;
-  padding: 14px 48px 14px 46px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  padding: 12px 36px 12px 28px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-strong);
+  border-radius: 0;
   color: var(--text);
   font-size: 16px;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.2s;
 }
 
 .input::placeholder {
   color: var(--text-muted);
+  font-weight: 300;
 }
 
 .input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
+  border-bottom-color: var(--text);
 }
 
 .spinner {
   position: absolute;
-  right: 16px;
+  right: 4px;
   top: 50%;
   translate: 0 -50%;
-  width: 18px;
-  height: 18px;
-  border: 2px solid var(--border);
-  border-top-color: var(--accent);
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--border);
+  border-top-color: var(--text-muted);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
