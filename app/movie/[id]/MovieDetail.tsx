@@ -68,7 +68,7 @@ export function MovieDetail({ entry: initialEntry, isOwner, trailerKey }: MovieD
   return (
     <div className={styles.page}>
       <div className={styles.topBar}>
-        <button className={styles.back} onClick={() => router.back()}>
+        <button className={styles.back} onClick={() => router.push('/')}>
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
             <line x1="14" y1="10" x2="6" y2="10" />
             <polyline points="10,4 4,10 10,16" />
