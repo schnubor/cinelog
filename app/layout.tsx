@@ -16,11 +16,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : 'http://localhost:3000'
-  ),
+  metadataBase: new URL('https://cinelog.chko.org'),
   title: 'Cinelog — 2026 Movie Journal',
   description: 'A personal journal of every film watched in 2026.',
 };
